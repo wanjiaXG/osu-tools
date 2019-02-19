@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using JetBrains.Annotations;
 using McMaster.Extensions.CommandLineUtils;
+using Newtonsoft.Json.Linq;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Mods;
@@ -17,6 +18,10 @@ namespace PerformanceCalculator.Simulate
 {
     public abstract class SimulateCommand : ProcessorCommand
     {
+        public int BeatmapID { set; get; } = 0;
+
+        private JObject Json = new JObject();
+
         public abstract string Beatmap { get; }
 
         public abstract Ruleset Ruleset { get; }
@@ -34,7 +39,7 @@ namespace PerformanceCalculator.Simulate
         public virtual int Score { get; }
 
         [UsedImplicitly]
-        public virtual string[] Mods { get; }
+        public virtual string[] Mods { get; set; }
 
         [UsedImplicitly]
         public virtual int Misses { get; }
@@ -51,7 +56,12 @@ namespace PerformanceCalculator.Simulate
 
             var mods = getMods(ruleset).ToArray();
 
-            var workingBeatmap = new ProcessorWorkingBeatmap(Beatmap);
+            ProcessorWorkingBeatmap workingBeatmap = null;
+            if (BeatmapID == 0)
+                new ProcessorWorkingBeatmap(Beatmap);
+            else
+                workingBeatmap = new ProcessorWorkingBeatmap(BeatmapID);
+
             workingBeatmap.Mods.Value = mods;
 
             var beatmap = workingBeatmap.GetPlayableBeatmap(ruleset.RulesetInfo);
@@ -59,7 +69,7 @@ namespace PerformanceCalculator.Simulate
             var beatmapMaxCombo = GetMaxCombo(beatmap);
             var maxCombo = Combo ?? (int)Math.Round(PercentCombo / 100 * beatmapMaxCombo);
             var statistics = GenerateHitResults(Accuracy / 100, beatmap, Misses, Mehs, Goods);
-            var score = Score;
+            var score = checkScore(Score);
             var accuracy = GetAccuracy(statistics);
 
             var scoreInfo = new ScoreInfo
@@ -74,7 +84,7 @@ namespace PerformanceCalculator.Simulate
             var categoryAttribs = new Dictionary<string, double>();
             double pp = ruleset.CreatePerformanceCalculator(workingBeatmap, scoreInfo).Calculate(categoryAttribs);
 
-            Console.WriteLine(workingBeatmap.BeatmapInfo.ToString());
+            System.Console.WriteLine(workingBeatmap.BeatmapInfo.ToString());
 
             WritePlayInfo(scoreInfo, beatmap);
 
@@ -86,6 +96,20 @@ namespace PerformanceCalculator.Simulate
                 WriteAttribute(kvp.Key, kvp.Value.ToString(CultureInfo.InvariantCulture));
 
             WriteAttribute("pp", pp.ToString(CultureInfo.InvariantCulture));
+        }
+
+        private int checkScore(int score)
+        {
+            int tmp = score;
+            foreach(var mod in Mods)
+            {
+
+                if (mod.ToUpper().EndsWith("EZ") || mod.ToUpper().EndsWith("NF") || mod.ToUpper().EndsWith("HT"))
+                {
+                    tmp = (int)(tmp*0.5);
+                }
+            }
+            return tmp;
         }
 
         private List<Mod> getMods(Ruleset ruleset)
@@ -114,6 +138,21 @@ namespace PerformanceCalculator.Simulate
 
         protected virtual double GetAccuracy(Dictionary<HitResult, int> statistics) => 0;
 
-        protected void WriteAttribute(string name, string value) => Console.WriteLine($"{name.PadRight(15)}: {value}");
+        protected void WriteAttribute(string name, string value)
+        {
+            System.Console.WriteLine($"{name.PadRight(15)}: {value}");
+            try
+            {
+                Json[name.ToLower()] = value;
+            }
+            catch(Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+        }
+        public string GetJson()
+        {
+            return Json.ToString();
+        }
     }
 }

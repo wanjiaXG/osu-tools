@@ -1,6 +1,7 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.IO;
 using Alba.CsConsoleFormat;
 using JetBrains.Annotations;
@@ -22,7 +23,6 @@ namespace PerformanceCalculator
 
         public void OnExecute(CommandLineApplication app, IConsole console)
         {
-            Console = console;
             Execute();
         }
 
@@ -40,7 +40,7 @@ namespace PerformanceCalculator
                     lines[i] = lines[i].TrimEnd();
                 str = string.Join('\n', lines);
 
-                Console.Write(str);
+                System.Console.Write(str);
                 if (OutputFile != null)
                     File.WriteAllText(OutputFile, str);
             }
@@ -50,4 +50,5 @@ namespace PerformanceCalculator
         {
         }
     }
+    
 }

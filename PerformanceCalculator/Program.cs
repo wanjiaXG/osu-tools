@@ -29,7 +29,7 @@ namespace PerformanceCalculator
 
         public int OnExecute(CommandLineApplication app, IConsole console)
         {
-            console.WriteLine("You must specify a subcommand.");
+            System.Console.WriteLine("You must specify a subcommand.");
             app.ShowHelp();
             return 1;
         }

@@ -42,7 +42,7 @@ namespace PerformanceCalculator.Performance
                 var categoryAttribs = new Dictionary<string, double>();
                 double pp = score.ScoreInfo.Ruleset.CreateInstance().CreatePerformanceCalculator(workingBeatmap, score.ScoreInfo).Calculate(categoryAttribs);
 
-                Console.WriteLine(f);
+                System.Console.WriteLine(f);
                 writeAttribute("Player", score.ScoreInfo.User.Username);
                 writeAttribute("Mods", score.ScoreInfo.Mods.Length > 0
                     ? score.ScoreInfo.Mods.Select(m => m.Acronym).Aggregate((c, n) => $"{c}, {n}")
@@ -52,10 +52,10 @@ namespace PerformanceCalculator.Performance
                     writeAttribute(kvp.Key, kvp.Value.ToString(CultureInfo.InvariantCulture));
 
                 writeAttribute("pp", pp.ToString(CultureInfo.InvariantCulture));
-                Console.WriteLine();
+                System.Console.WriteLine();
             }
         }
 
-        private void writeAttribute(string name, string value) => Console.WriteLine($"{name.PadRight(15)}: {value}");
+        private void writeAttribute(string name, string value) => System.Console.WriteLine($"{name.PadRight(15)}: {value}");
     }
 }

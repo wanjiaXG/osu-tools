@@ -42,7 +42,7 @@ namespace PerformanceCalculator.Simulate
         [UsedImplicitly]
         [Option(CommandOptionType.MultipleValue, Template = "-m|--mod <mod>", Description = "One for each mod. The mods to compute the performance with."
                                                                                             + " Values: hr, dt, hd, fl, ez, etc...")]
-        public override string[] Mods { get; }
+        public override string[] Mods { get; set; }
 
         [UsedImplicitly]
         [Option(Template = "-X|--misses <misses>", Description = "Number of misses. Defaults to 0.")]
@@ -97,7 +97,9 @@ namespace PerformanceCalculator.Simulate
         protected override void WritePlayInfo(ScoreInfo scoreInfo, IBeatmap beatmap)
         {
             WriteAttribute("Accuracy", (scoreInfo.Accuracy * 100).ToString(CultureInfo.InvariantCulture) + "%");
-            WriteAttribute("Combo", FormattableString.Invariant($"{scoreInfo.MaxCombo} ({Math.Round(100.0 * scoreInfo.MaxCombo / GetMaxCombo(beatmap), 2)}%)"));
+            //WriteAttribute("Combo", FormattableString.Invariant($"{scoreInfo.MaxCombo} ({Math.Round(100.0 * scoreInfo.MaxCombo / GetMaxCombo(beatmap), 2)}%)"));
+            WriteAttribute("Combo", scoreInfo.MaxCombo.ToString());
+
             WriteAttribute("Misses", scoreInfo.Statistics[HitResult.Miss].ToString(CultureInfo.InvariantCulture));
             WriteAttribute("Goods", scoreInfo.Statistics[HitResult.Good].ToString(CultureInfo.InvariantCulture));
             WriteAttribute("Greats", scoreInfo.Statistics[HitResult.Great].ToString(CultureInfo.InvariantCulture));

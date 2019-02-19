@@ -43,10 +43,10 @@ namespace PerformanceCalculator.Profile
 
             var ruleset = LegacyHelper.GetRulesetFromLegacyID(Ruleset ?? 0);
 
-            Console.WriteLine("Getting user data...");
+            System.Console.WriteLine("Getting user data...");
             dynamic userData = getJsonFromApi($"get_user?k={Key}&u={ProfileName}&m={Ruleset}&type=username")[0];
 
-            Console.WriteLine("Getting user top scores...");
+            System.Console.WriteLine("Getting user top scores...");
             foreach (var play in getJsonFromApi($"get_user_best?k={Key}&u={ProfileName}&m={Ruleset}&limit=100&type=username"))
             {
                 string beatmapID = play.beatmap_id;
@@ -54,7 +54,7 @@ namespace PerformanceCalculator.Profile
                 string cachePath = Path.Combine("cache", $"{beatmapID}.osu");
                 if (!File.Exists(cachePath))
                 {
-                    Console.WriteLine($"Downloading {beatmapID}.osu...");
+                    System.Console.WriteLine($"Downloading {beatmapID}.osu...");
                     new FileWebRequest(cachePath, $"{base_url}/osu/{beatmapID}").Perform();
                 }
 

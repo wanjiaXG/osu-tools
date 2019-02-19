@@ -29,7 +29,7 @@ namespace PerformanceCalculator.Simulate
         [UsedImplicitly]
         [Option(CommandOptionType.MultipleValue, Template = "-m|--mod <mod>", Description = "One for each mod. The mods to compute the performance with."
                                                                                             + " Values: hr, dt, fl, 4k, 5k, etc...")]
-        public override string[] Mods { get; }
+        public override string[] Mods { get; set; }
 
         public override Ruleset Ruleset => new ManiaRuleset();
 
