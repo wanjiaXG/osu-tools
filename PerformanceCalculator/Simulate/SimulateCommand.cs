@@ -27,7 +27,7 @@ namespace PerformanceCalculator.Simulate
         public abstract Ruleset Ruleset { get; }
 
         [UsedImplicitly]
-        public virtual double Accuracy { get; }
+        public virtual double Accuracy { get; set; }
 
         [UsedImplicitly]
         public virtual int? Combo { get; }
@@ -58,7 +58,7 @@ namespace PerformanceCalculator.Simulate
 
             ProcessorWorkingBeatmap workingBeatmap = null;
             if (BeatmapID == 0)
-                new ProcessorWorkingBeatmap(Beatmap);
+                workingBeatmap = new ProcessorWorkingBeatmap(Beatmap);
             else
                 workingBeatmap = new ProcessorWorkingBeatmap(BeatmapID);
 
@@ -95,21 +95,26 @@ namespace PerformanceCalculator.Simulate
             foreach (var kvp in categoryAttribs)
                 WriteAttribute(kvp.Key, kvp.Value.ToString(CultureInfo.InvariantCulture));
 
+            System.Console.WriteLine(pp);
             WriteAttribute("pp", pp.ToString(CultureInfo.InvariantCulture));
         }
 
         private int checkScore(int score)
         {
-            int tmp = score;
-            foreach(var mod in Mods)
+            if(Mods != null)
             {
-
-                if (mod.ToUpper().EndsWith("EZ") || mod.ToUpper().EndsWith("NF") || mod.ToUpper().EndsWith("HT"))
+                int tmp = score;
+                foreach (var mod in Mods)
                 {
-                    tmp = (int)(tmp*0.5);
+
+                    if (mod.ToUpper().EndsWith("EZ") || mod.ToUpper().EndsWith("NF") || mod.ToUpper().EndsWith("HT"))
+                    {
+                        tmp = (int)(tmp * 0.5);
+                    }
                 }
+                return tmp;
             }
-            return tmp;
+            return score;
         }
 
         private List<Mod> getMods(Ruleset ruleset)
@@ -152,7 +157,9 @@ namespace PerformanceCalculator.Simulate
         }
         public string GetJson()
         {
-            return Json.ToString();
+            return Json.ToString()
+                .Replace("\r\n","")
+                .Replace("\n","");
         }
     }
 }

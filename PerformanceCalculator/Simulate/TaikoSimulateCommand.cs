@@ -28,7 +28,7 @@ namespace PerformanceCalculator.Simulate
         [UsedImplicitly]
         [Option(Template = "-a|--accuracy <accuracy>", Description = "Accuracy. Enter as decimal 0-100. Defaults to 100."
                                                                      + " Scales hit results as well and is rounded to the nearest possible value for the beatmap.")]
-        public override double Accuracy { get; } = 100;
+        public override double Accuracy { set; get; } = 100;
 
         [UsedImplicitly]
         [Option(Template = "-c|--combo <combo>", Description = "Maximum combo during play. Defaults to beatmap maximum.")]

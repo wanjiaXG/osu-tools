@@ -1,4 +1,5 @@
-﻿using PerformanceCalculator;
+﻿using osu.Game.Beatmaps.Formats;
+using PerformanceCalculator;
 using PerformanceCalculator.Simulate;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace PPServer
     {
         public static void Main(string[] args)
         {
-            if(args.Length > 0)
+            LegacyDifficultyCalculatorBeatmapDecoder.Register();
+            if (args.Length > 0)
             {
                 if(Directory.Exists(args[0]))
                     ProcessorWorkingBeatmap.FilePath = args[0];
@@ -90,6 +92,7 @@ namespace PPServer
             }
 
             cmd.Mods = GetMods(mods);
+            cmd.Accuracy = 100;
             cmd.Execute();
             writeHeader(context);
 
